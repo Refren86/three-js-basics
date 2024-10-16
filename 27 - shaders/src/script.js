@@ -28,12 +28,24 @@ const textureLoader = new THREE.TextureLoader();
 // Geometry
 const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
 
+const count = geometry.attributes.position.count; // vertices count
+const randoms = new Float32Array(count);
+
+for (let i = 0; i < count; i++) {
+  randoms[i] = Math.random();
+}
+
+// adding custom attribute
+geometry.setAttribute("aRandom", new THREE.BufferAttribute(randoms, 1));
+
+// console.log("Geometry: ", geometry);
+
 // Material
 const material = new THREE.RawShaderMaterial({
   vertexShader: testVertex,
   fragmentShader: testFragment,
+  side: THREE.DoubleSide,
   // wireframe: true,
-  // side: THREE.DoubleSide,
   // transparent: true
 });
 

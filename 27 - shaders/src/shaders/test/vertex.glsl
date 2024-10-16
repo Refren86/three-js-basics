@@ -2,10 +2,31 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 
-attribute vec3 position;
+attribute vec3 position; // vec3 coordinates for vertexes
+attribute float aRandom;
 
-void main()
+// called automatically
+void main() {
+  vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+  // modelPosition.z += sin(modelPosition.x * 10.0) * 0.1;
+  modelPosition.z += aRandom * 0.1;
+
+  vec4 viewPosition = viewMatrix * modelPosition;
+  vec4 projectedPosition = projectionMatrix * viewPosition;
+
+  gl_Position = projectedPosition;
+
+    // gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0); // returns vec4
+}
+
+// function
+float loremIpsum(float a, float b)
 {
+  return a + b;
+}
+
+// void test()
+// {
   // variables
   // int a = 1;
   // float b = 1.0;
@@ -43,5 +64,13 @@ void main()
   // vec2 bar = foo.xz;
   // vec2 bar = foo.yx;
 
-  gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
-}
+  // similar to vec3 but with a w for 4th dimension and a (alpha) for opacity
+  // vec4 foo = vec4(1.0, 2.0, 3.0, 4.0);
+  // float bar = foo.w;
+  // float bar = foo.a;
+
+  // there are other types like mat2, mat3, mat4, sampler2D
+
+  // float result = loremIpsum(1.0, 2.0);
+// }
+
