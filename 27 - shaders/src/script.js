@@ -21,6 +21,7 @@ const scene = new THREE.Scene();
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
+const flagTexture = textureLoader.load("/textures/flag-french.jpg");
 
 /**
  * Test mesh
@@ -35,8 +36,8 @@ for (let i = 0; i < count; i++) {
   randoms[i] = Math.random();
 }
 
-// adding custom attribute
-geometry.setAttribute("aRandom", new THREE.BufferAttribute(randoms, 1));
+// adding custom attribute to geometry and which can be extracted in vertex shader
+geometry.setAttribute("aRandom", new THREE.BufferAttribute(randoms, 1)); // 1st - array; 2-nd how many values to take from the array for 1 vertex (only 1 coordinate)
 
 // console.log("Geometry: ", geometry);
 
@@ -45,12 +46,32 @@ const material = new THREE.RawShaderMaterial({
   vertexShader: testVertex,
   fragmentShader: testFragment,
   side: THREE.DoubleSide,
+  uniforms: {
+    uFrequency: { value: new THREE.Vector2(10, 5) }, // custom uniform parameter name
+    uTime: { value: 0 },
+    uColor: { value: new THREE.Color("orange") },
+    uTexture: { value: flagTexture }
+  },
   // wireframe: true,
   // transparent: true
 });
 
+gui
+  .add(material.uniforms.uFrequency.value, "x")
+  .min(0)
+  .max(20)
+  .step(0.01)
+  .name("frequency-x");
+gui
+  .add(material.uniforms.uFrequency.value, "y")
+  .min(0)
+  .max(20)
+  .step(0.01)
+  .name("frequency-y");
+
 // Mesh
 const mesh = new THREE.Mesh(geometry, material);
+mesh.scale.y = 2 / 3; // ratio
 scene.add(mesh);
 
 /**
@@ -107,7 +128,10 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 const clock = new THREE.Clock();
 
 const tick = () => {
-  const elapsedTime = clock.getElapsedTime();
+  const elapsedTime = clock.getElapsedTime(); // shows time starting from 0 in seconds
+
+  // Update materials
+  material.uniforms.uTime.value = elapsedTime;
 
   // Update controls
   controls.update();
