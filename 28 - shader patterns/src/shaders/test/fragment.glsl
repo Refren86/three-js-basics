@@ -1,5 +1,9 @@
 varying vec2 vUv; // x and y: 0.0 - 1.0
 
+float random(vec2 st) {
+    return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+}
+
 void main()
 {
     //  (Pattern 3)
@@ -98,8 +102,33 @@ void main()
     // float square2 = 1.0 - step(0.25, max(abs(vUv.x - 0.5), abs(vUv.y - 0.5)));
     // float strength = square1 * square2;
 
-    // (Pattern 21)
+    // (Pattern 21) - 0.0, 0.1, 0.2, 0.3...
+    // float strength = floor(vUv.x * 10.0) / 10.0;
     
+    // (Pattern 22)
+    // float strength = floor(vUv.x * 10.0) / 10.0;
+    // strength *= floor(vUv.y * 10.0) / 10.0;
+
+    // (Pattern 23)
+    // float strength = random(vUv);
+
+    // (Pattern 24)
+    // vec2 gridUv = vec2(floor(vUv.x * 10.0) / 10.0, floor(vUv.y * 10.0) / 10.0);
+    // float strength = random(gridUv);
+
+    // (Pattern 25)
+    // vec2 gridUv = vec2(floor(vUv.x * 10.0) / 10.0, floor(vUv.y * 10.0 + vUv.x * 5.0) / 10.0);
+    // float strength = random(gridUv);
+
+    // (Pattern 26)
+    // float strength = length(vUv);
+
+    // (Pattern 27)
+    // float strength = length(vUv - 0.5);
+    // float strength = distance(vUv, vec2(0.5)); // more flexible as 26 we can pass x and y into vec2
+
+    // (Pattern 28)
+    float strength = 1.0 - distance(vUv, vec2(0.5));
 
     // Other interesting patterns:
     // float strength = step(abs(vUv.x - 0.5), abs(vUv.y - 0.5));
